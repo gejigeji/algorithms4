@@ -30,19 +30,28 @@ func Merge(c types.Sortable) {
 		}
 	}
 	
-	var sort func(types.Sortable, int, int)
-	sort = func(c types.Sortable, lo, hi int) {
+	var sort func(types.Sortable, int, int, chan bool)
+	var finish = make(chan bool)
+	defer close(finish)
+	sort = func(c types.Sortable, lo, hi int, wait chan bool) {
+		defer func(){wait<-true}()
 		if hi<=lo {
 			return
 		}
 		var mid = lo+(hi-lo)/2
-		sort(c, lo, mid)
-		sort(c, mid+1, hi)
+		var low = make(chan bool, 1)
+		defer close(low)
+		var high = make(chan bool, 1)
+		defer close(high)
+		go sort(c, lo, mid, low)
+		go sort(c, mid+1, hi, high)
+		<-low
+		<-high
 		merge(c, lo, mid, hi)
 	}
 
-
-	sort(c, 0, c.Len()-1)
+	go sort(c, 0, c.Len()-1, finish)
+	<-finish
 }
 
 
