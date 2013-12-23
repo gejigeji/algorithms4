@@ -9,7 +9,7 @@ import (
 )
 
 func main(){
-	var length = 30
+	var length = 10
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	var c = make(atypes.Sortable, length)
 	for i:=0; i<length; i++ {
@@ -17,6 +17,6 @@ func main(){
 		c[i] = data
 	}
 	fmt.Printf("before:%v\n", c)
-	asort.Merge(c)
+	asort.MergeBU(c)
 	fmt.Printf("after:%v\n", c)
 }
