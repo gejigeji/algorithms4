@@ -2,8 +2,13 @@ package types
 
 import "fmt"
 
-type Compare interface {
+type Less interface {
 	Less(other interface{}) bool
+}
+
+type Compare interface {
+	Less
+	Compare(interface{}) int
 }
 
 type Numeric interface {
@@ -29,6 +34,31 @@ func (i Integer)Less(other interface{}) bool{
 		}
 	}
 }
+func(i Integer)Compare(other interface{}) int {
+	switch o := other.(type) {
+	case int:
+		return CompareII(int(i), o)
+	case float64:
+		return CompareFF(i.Numeric(), o)
+	default:
+		if d, ok :=o.(Numeric); ok{
+			return CompareFF(i.Numeric(), d.Numeric())
+		} else {
+			var message = fmt.Sprintf("%v can't compare with %v", i, o)
+			panic(message)
+		}
+	}
+}
+
+func CompareII(x int, y int) int {
+	if x>y {
+		return 1
+	}
+	if x<y {
+		return -1
+	}
+	return 0
+}
 
 type Float float64 
 func (f Float)Numeric() float64{
@@ -49,6 +79,31 @@ func (f Float)Less(other interface{}) bool{
 		}
 	}
 }
+func(f Float)Compare(other interface{}) int {
+	switch o := other.(type) {
+	case int:
+		return CompareFF(f.Numeric(), float64(o))
+	case float64:
+		return CompareFF(f.Numeric(), o)
+	default:
+		if d, ok :=o.(Numeric); ok{
+			return CompareFF(f.Numeric(), d.Numeric())
+		} else {
+			var message = fmt.Sprintf("%v can't compare with %v", f, o)
+			panic(message)
+		}
+	}
+}
+func CompareFF(x float64, y float64) int {
+	if x>y {
+		return 1
+	}
+	if x<y {
+		return -1
+	}
+	return 0
+}
+
 
 type Stringer interface {
 	String() string
@@ -73,8 +128,33 @@ func (s String)Less(other interface{}) bool{
 		}
 	}
 }
+func(s String)Compare(other interface{}) int {
+	switch o := other.(type) {
+	case string:
+		return CompareSS(string(s), o)
+	case String:
+		return CompareSS(string(s), string(o))
+	default:
+		if d, ok :=o.(Stringer); ok{
+			return CompareSS(s.String(), d.String())
+		} else {
+			var message = fmt.Sprintf("%v can't compare with %v", s, o)
+			panic(message)
+		}
+	}
+}
 
-type Sortable []Compare
+func CompareSS(x string, y string) int {
+	if x>y {
+		return 1
+	}
+	if x<y {
+		return -1
+	}
+	return 0
+}
+
+type Sortable []Less
 
 func (s Sortable)Len() int {
 	return len(s)
