@@ -37,14 +37,21 @@ func Quick(c types.Sortable){
 		return j
 	}
 
-	var sort func(types.Sortable, int, int)
-	sort = func(c types.Sortable, lo, hi int){
+	var sort func(types.Sortable, int, int, chan bool)
+	var finish = make(chan bool)
+	sort = func(c types.Sortable, lo, hi int, finish chan bool){
+		defer func(){finish<-true}()
 		if hi<=lo {
 			return
 		}
+		var low = make(chan bool)
+		var high = make(chan bool)
 		var j = partition(c, lo, hi)
-		sort(c, lo, j-1)
-		sort(c, j+1, hi)
+		go sort(c, lo, j-1, low)
+		go sort(c, j+1, hi, high)
+		<-low
+		<-high
 	}
-	sort(c, 0, c.Len()-1)
+	go sort(c, 0, c.Len()-1, finish)
+	<-finish
 }

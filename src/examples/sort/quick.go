@@ -30,10 +30,10 @@ func main(){
 }
 
 func run(){
-	var length = 100
+	var length = 20
 	var c = make(atypes.Sortable, length)
 	for i:=0; i<length; i++ {
-		var data = atypes.Integer(rand.Intn(100000000))
+		var data = atypes.Integer(rand.Intn(400))
 		c[i] = data
 	}
 	fmt.Printf("before:%v\n", c)
