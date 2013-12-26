@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+//	"fmt"
 	asort "algorithms/sort"
 	atypes "algorithms/types"
 	"math/rand"
@@ -30,13 +30,14 @@ func main(){
 }
 
 func run(){
-	var length = 20
+	var length = 100000
 	var c = make(atypes.Sortable, length)
 	for i:=0; i<length; i++ {
-		var data = atypes.Integer(rand.Intn(400))
+		var data = atypes.Integer(rand.Intn(1000000000))
 		c[i] = data
 	}
-	fmt.Printf("before:%v\n", c)
+//	fmt.Printf("before:%v\n", c)
 	asort.Quick(c)
-	fmt.Printf("after:%v\n", c)
+//	fmt.Printf("after:%v\n", c)
 }
+

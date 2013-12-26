@@ -4,54 +4,86 @@ import (
 	"algorithms/types"
 )
 
-func Quick(c types.Sortable){
-	var partition = func(c types.Sortable, lo, hi int) int{
-		var i=lo
-		var j=hi+1
-		var v = c[lo]
-		for{
-			for {
-				i++
-				if !c[i].Less(v) {
-					break
-				}
-				if i==hi {
-					break
-				}
-			}
-			for {
-				j--
-				if !v.Less(c[j]) {
-					break
-				}
-				if j==lo {
-					break
-				}
-			}
-			if i>=j {
+func partition(a types.Sortable, lo, hi int) int {
+	i := lo
+	j := hi+1
+	v := lo
+	for {
+		for i++;a.Less(i, v);i++ {
+			if i == hi {
 				break
 			}
-			c.Swap(i, j)
 		}
-		c.Swap(lo, j)
-		return j
+		for j--;a.Less(v, j);j-- {
+			if j == lo {
+				break
+			}
+		}
+		if i >= j {
+			break
+		}
+		a.Swap(i, j)
 	}
+	a.Swap(lo, j)
+	return j
+}
 
+func quick(a types.Sortable, lo, hi int) {
+	if hi <= lo {
+		return
+	}
+	j := partition(a, lo, hi)
+	quick(a, lo, j-1)
+	quick(a, j+1, hi)
+}
+
+func Quick(a types.Sortable) {
+	quick(a, 0, a.Len()-1)
+}
+
+/*
+func QuickBU(a types.Sortable){
+	var finish = make(chan bool,1)
+	defer close(finish)
 	var sort func(types.Sortable, int, int, chan bool)
-	var finish = make(chan bool)
-	sort = func(c types.Sortable, lo, hi int, finish chan bool){
-		defer func(){finish<-true}()
-		if hi<=lo {
+	sort = func(a types.Sortable, lo, hi int, wait chan bool){
+		defer func(){wait <- true}()
+		if hi <= lo {
 			return
 		}
-		var low = make(chan bool)
-		var high = make(chan bool)
-		var j = partition(c, lo, hi)
-		go sort(c, lo, j-1, low)
-		go sort(c, j+1, hi, high)
+		j := partition(a, lo, hi)
+		var low = make(chan bool,1)
+		defer close(low)
+		var high = make(chan bool,1)
+		defer close(high)
+		go sort(a, lo, j-1, low)
+		go sort(a, j+1, hi, high)
 		<-low
 		<-high
 	}
-	go sort(c, 0, c.Len()-1, finish)
+	go sort(a, 0, a.Len()-1, finish)
 	<-finish
+}
+*/
+
+func QuickBU(a types.Sortable) {
+	var finish = make(chan bool,1)
+	defer close(finish)
+	quickbu(a, 0, a.Len()-1, finish)
+	<-finish
+}
+func quickbu(a types.Sortable, lo, hi int,wait chan bool){
+	defer func(){wait<-true}()
+	if hi <= lo {
+		return
+	}
+	j := partition(a, lo, hi)
+	var low = make(chan bool,1)
+	defer close(low)
+	var high = make(chan bool,1)
+	defer close(high)
+	go quickbu(a, lo, j-1, low)
+	go quickbu(a, j+1, hi, high)
+	<-low
+	<-high
 }

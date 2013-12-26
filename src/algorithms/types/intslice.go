@@ -1,4 +1,4 @@
-// package datastruct for easy use algorithms code.
+// package types for easy use algorithms code.
 // the Ints just like buildin package sort.IntSlice
 package types
 

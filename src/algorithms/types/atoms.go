@@ -154,7 +154,7 @@ func CompareSS(x string, y string) int {
 	return 0
 }
 
-type Sortable []Compare
+type Sortable []Less
 
 func (s Sortable)Len() int {
 	return len(s)

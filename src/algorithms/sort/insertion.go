@@ -1,6 +1,8 @@
 package sort
 
-import "sort"
+import (
+	"sort"
+)
 
 func Insertion(c sort.Interface){
 	var l = c.Len()
