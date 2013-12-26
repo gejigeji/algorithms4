@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	atypes "algorithms/types"
+	asort "algorithms/sort"
 	"math/rand"
 	"runtime"
 	"runtime/pprof"
@@ -26,22 +27,18 @@ func main(){
 		defer pprof.StopCPUProfile()
 		run()
 	}
-
 }
 
 func run(){
 	var length = 100
-	var c = atypes.NewMaxPQ(20)
+	var c = make(atypes.Sortable, length)
 	for i:=0; i<length; i++ {
 		var data = atypes.Integer(rand.Intn(10000000))
-		c.Insert(data)
+		c[i]=data
 	}
-	fmt.Println("Min Data Filter by the MaxPQ")
-	for {
-		data := c.DelMax()
-		if data == nil{
-			break
-		}
-		fmt.Printf("Max Data In The Stack:%v\n", data)
+	fmt.Printf("select top n from the collection %v\n", c)
+	for i:=length/20; i<length/10; i++{
+		data := asort.Select(c, i)
+		fmt.Printf("Select %v from the collection got:%v\n", i, data)
 	}
 }

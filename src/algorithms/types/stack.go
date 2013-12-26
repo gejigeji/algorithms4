@@ -2,21 +2,25 @@ package types
 
 import ("fmt")
 
-type BinTree []Compare
+type BinTree struct{
+	tree *Sortable
+	judge func(Compare, Compare)bool
+}
 //FIXME: 没有处理越界
-func NewBinTree(max int) BinTree{
-	var b = make(BinTree, max+1)
-	b[0]=Integer(0)
-	return b
+func NewBinTree(max int, j func(Compare, Compare)bool) BinTree{
+	var tree = make(Sortable, max+1)
+	tree[0]=Integer(0)
+	return BinTree{&tree, j}
 }
 
 func (b BinTree)Size()int{
-	var ret, ok = b[0].(Integer)
+	var tree = *b.tree
+	var ret, ok = tree[0].(Integer)
 	if ok {
 		return int(ret)
 	} else {
 		var message = fmt.Sprintf("It is't a size in Buffer[0]. It is %v", 
-			b[0])
+			tree[0])
 		panic(message)
 	}
 }
@@ -27,7 +31,8 @@ func (b BinTree)IsEmpty() bool{
 
 func (b BinTree)Insert(item Compare) int{
 	b.incSize()
-	b[b.Size()] = item
+	var tree = *b.tree
+	tree[b.Size()] = item
 	return b.Swim(b.Size())
 }
 
@@ -35,97 +40,99 @@ func (b BinTree)DelMax() Compare{
 	if b.IsEmpty() {
 		return nil
 	}
-	var max = b[1]
-	b.Swap(1, b.Size())
+	var tree = *b.tree
+	var max = tree[1]
+	b.tree.Swap(1, b.Size())
 	b.recSize()
-	b[b.Size()+1] = nil
+	tree[b.Size()+1] = nil
 	b.Sink(1)
 	return max
 }
 
 func (b BinTree)Len() int {
-	return len(b)-1
-}
-
-func (b BinTree)Less(i, j int) bool {
-	return b[i].Less(b[j])
-}
-
-func (b BinTree)Swap(i, j int){
-	b[i], b[j] = b[j], b[i]
+	return b.tree.Len()-1
 }
 
 func (b BinTree)Swim(k int) int{
-	for k>1 && b.Less(k/2, k) {
-		b.Swap(k/2, k)
+	var tree = *b.tree
+	for k>1 && b.judge(tree[k/2], tree[k]) {
+		b.tree.Swap(k/2, k)
 		k=k/2
 	}
 	return k
 }
 
 func (b BinTree)Sink(k int)int{
+	var tree = *b.tree
 	for 2*k <= b.Size(){
 		var j = 2*k
-		if j<b.Size()&&b.Less(j, j+1){
+		if j<b.Size()&&b.judge(tree[j], tree[j+1]){
 			j++
 		}
-		if (!b.Less(k, j)) {
+		if (!b.judge(tree[k], tree[j])) {
 			break
 		}
-		b.Swap(k, j)
+		b.tree.Swap(k, j)
 		k=j
 	}
 	return k
 }
 
 func (b BinTree)incSize(){
-	var data, ok = b[0].(Integer)
+	var tree = *b.tree
+	var data, ok = tree[0].(Integer)
 	if ok {
 		data++
-		b[0] = data
+		tree[0] = data
 	}else{
 		var message = fmt.Sprintf("It is't a size in Buffer[0]. It is %v", 
-			b[0])
+			tree[0])
 		panic(message)
 	}
 }
 
 func (b BinTree)recSize(){
-	var data, ok = b[0].(Integer)
+	var tree = *b.tree
+	var data, ok = tree[0].(Integer)
 	if ok {
 		data--
-		b[0] = data
+		tree[0] = data
 	}else{
 		var message = fmt.Sprintf("It is't a size in Buffer[0]. It is %v", 
-			b[0])
+			tree[0])
 		panic(message)
 	}
 }
 
-type MaxPQ struct {
+type TopPQ struct {
 	*BinTree
 }
 
-func NewMaxPQ(size int) MaxPQ {
-	var b = NewBinTree(size)
-	return MaxPQ{&b}
+func NewMaxPQ(size int) TopPQ {
+	var b = NewBinTree(size, func(x, y Compare)bool{return x.Less(y)})
+	return TopPQ{&b}
 }
 
-func (m MaxPQ) IsEmpty() bool{
+func NewMinPQ(size int) TopPQ {
+	var b = NewBinTree(size, func(x, y Compare)bool{return y.Less(x)})
+	return TopPQ{&b}
+}
+
+func (m TopPQ) IsEmpty() bool{
 	return m.BinTree.IsEmpty()
 }
 
-func (m MaxPQ) Size() int {
+func (m TopPQ) Size() int {
 	return m.BinTree.Size()
 }
 
-func (m *MaxPQ) Insert(item Compare) {
+func (m *TopPQ) Insert(item Compare) {
 	if m.BinTree.Size()==m.BinTree.Len() {
 		m.BinTree.DelMax()
 	}
 	m.BinTree.Insert(item)
 }
 
-func (m *MaxPQ) DelMax() Compare {
+func (m *TopPQ) DelMax() Compare {
 	return m.BinTree.DelMax()
 }
