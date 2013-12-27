@@ -22,7 +22,9 @@ func siftDown(data types.Sortable, lo, hi, first int) {
 	}
 }
 
-func HeapSort(data types.Sortable, a, b int) {
+func HeapSort(data types.Sortable) {
+	a := 0
+	b := data.Len()
 	first := a
 	lo := 0
 	hi := b-a

@@ -30,14 +30,14 @@ func main(){
 }
 
 func run(){
-	var length = 10000000
+	var length = 500000
 	var c = make(atypes.Sortable, length)
 	for i:=0; i<length; i++ {
 		var data = atypes.Integer(rand.Intn(1000000000))
 		c[i] = data
 	}
-//	fmt.Printf("before:%v\n", c)
-	asort.Quick3Way(c)
-//	fmt.Printf("after:%v\n", c)
+	//fmt.Printf("before:%v\n", c)
+	asort.Quick3WayBU(c)
+	//fmt.Printf("after:%v\n", c)
 }
 
