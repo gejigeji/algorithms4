@@ -25,12 +25,11 @@ func (bst *BinSearchTree) Size() int{
 	}
 }
 
-func size(node_pointer *Node) int{
-	if node_pointer != nil{
-		return node_pointer.N
-	}else{
+func size(node *Node) int{
+	if node == nil {
 		return 0
 	}
+	return node.N
 }
 
 func (bst *BinSearchTree) Get(key Key) Val{
@@ -104,14 +103,14 @@ func (bst *BinSearchTree) Show(){
 }
 
 func show(node *Node){
-	fmt.Println("        node:  key: ",node.key, " value: ", node.val)
+	fmt.Println("        node:  key: ",node.key, " value: ", node.val, " size: ",node.N)
 	if node.left != nil{
-		fmt.Println(" left  child:  key: ",node.left.key, " value: ", node.left.val)
+		fmt.Println(" left  child:  key: ",node.left.key, " value: ", node.left.val, " size: ", node.left.N)
 	}else{
 		fmt.Println(" left  child:  nil")
 	}
 	if node.right != nil{
-		fmt.Println(" right child:  key: ",node.right.key, " value: ", node.right.val, "\n")
+		fmt.Println(" right child:  key: ",node.right.key, " value: ", node.right.val, " size: ", node.right.N, "\n")
 	}else{
 		fmt.Println(" right child:  nil\n")
 	}
@@ -165,10 +164,36 @@ func floor(node *Node, key Key) *Node{
 	}else{
 		if node.right == nil{
 			return node
-		}else if key.Compare(node.right.key) > 0{
+		}else if key.Compare(node.right.key) < 0{
 			return node
 		}else{
 			return floor(node.right, key)
 		}
+	}
+}
+
+func (bst *BinSearchTree) Select(k int) Key{
+	if bst.root == nil{
+		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
+		panic(message)
+	}else{
+		return selectNode(bst.root, k).key
+	}
+}
+
+func selectNode(node *Node, k int) *Node{
+	if node.left == nil{
+		panic("Out of range")
+	}
+	var t = size(node.left)
+	if t > k{
+		return selectNode(node.left, k)
+	}else if t < k{
+		if node.right == nil{
+			panic("Out of range")
+		}
+		return selectNode(node.right, k-t-1)
+	}else{
+		return node
 	}
 }
