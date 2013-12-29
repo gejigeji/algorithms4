@@ -183,7 +183,17 @@ func (bst *BinSearchTree) Select(k int) Key{
 
 func selectNode(node *Node, k int) *Node{
 	if node.left == nil{
-		panic("Out of range")
+		if 0 > k {
+			panic("Out of range")
+		}else if 0 < k{
+			if node.right == nil{
+				panic("Out of range")
+			}else{
+				return selectNode(node.right, k-1)
+			}
+		}else{
+			return node
+		}
 	}
 	var t = size(node.left)
 	if t > k{
