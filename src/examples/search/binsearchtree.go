@@ -28,6 +28,31 @@ func main(){
 	fmt.Println(c.Select(8))
 	fmt.Println(c.Min())
 	fmt.Println(c.Rank(atypes.Integer(1000)))
+
+	c.Delete(atypes.Integer(318))
+	c.Show()
+	fmt.Println(c.Min())
+
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+/*
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+	*/
 }
 
 

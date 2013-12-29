@@ -279,4 +279,74 @@ func deleteMin(node *Node) *Node{
 	return node
 }
 
+//todo: fix size
+func (bst *BinSearchTree) Delete(key Key) {
+	if bst.root == nil{
+		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
+		panic(message)
+	}else{
+		if bst.root.left == nil && bst.root.right == nil{
+			if bst.root.key == key{
+				bst.root = nil
+			}else{
+				var message = fmt.Sprintf("Node containing key %v is not exist.", key)
+				panic(message)
+			}
+		}else{
+			bst.root = deleteNode(bst.root, key)
+		}
+	}
+}
 
+func deleteNode(node *Node, key Key) *Node{
+	var cmp = key.Compare(node.key)
+	if cmp < 0{
+		if node.left == nil{
+			var message = fmt.Sprintf("Node containing key %v is not exist.", key)
+			panic(message)
+		}else{
+			if node.left.left == nil && node.left.right == nil{
+				if node.left.key == key{
+					node.left = nil
+					return node
+				}else{
+					var message = fmt.Sprintf("Node containing key %v is not exist.", key)
+					panic(message)
+				}
+			}else{
+				node.left = deleteNode(node.left, key)
+			}
+		}
+	}else if cmp > 0 {
+		if node.right == nil{
+			var message = fmt.Sprintf("Node containing key %v is not exist.", key)
+			panic(message)
+		}else{
+			if node.right.left == nil && node.right.right == nil{
+				if node.right.key == key{
+					node.right = nil
+					return node
+				}else{
+					var message = fmt.Sprintf("Node containing key %v is not exist.", key)
+					panic(message)
+				}
+			}else{
+				node.right = deleteNode(node.right, key)
+			}
+		}
+	}else{
+		var nodeTmp *Node = node
+		var nodeMinTmp = min(nodeTmp.right)
+		node.key = nodeMinTmp.key
+		node.val = nodeMinTmp.val
+		node.N = nodeMinTmp.N
+		//*node = *nodeMinTmp
+		node.left = nodeTmp.left
+		if nodeTmp.left == nil && nodeTmp.right == nil{
+			node.right = nil
+		}else{
+			node.right = deleteMin(nodeTmp.right)
+		}
+	}
+	return node
+}
