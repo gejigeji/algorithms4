@@ -261,25 +261,24 @@ func deleteMin(node *Node) *Node{
 	}
 	if node.left.left == nil && node.left.right == nil{
 		node.left = nil
-		if node.right == nil{
-			node.N = 1
-		}else{
-			node.N = size(node.right) + 1
-		}
+		node.sizeSum()
 	}else{
 		node.left = deleteMin(node.left)
-		if node.left == nil && node.right == nil{
-			node.N = 1
-		}else if node.left == nil{
-			node.N = size(node.right) + 1
-		}else{
-			node.N = size(node.left) + size(node.right) + 1
-		}
+		node.sizeSum()
 	}
 	return node
 }
 
-//todo: fix size
+func (node *Node) sizeSum(){
+	if node.left == nil && node.right == nil{
+		node.N = 1
+	}else if node.left == nil{
+		node.N = size(node.right) + 1
+	}else{
+		node.N = size(node.left) + size(node.right) + 1
+	}
+}
+
 func (bst *BinSearchTree) Delete(key Key) {
 	if bst.root == nil{
 		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
@@ -308,6 +307,7 @@ func deleteNode(node *Node, key Key) *Node{
 			if node.left.left == nil && node.left.right == nil{
 				if node.left.key == key{
 					node.left = nil
+					node.sizeSum()
 					return node
 				}else{
 					var message = fmt.Sprintf("Node containing key %v is not exist.", key)
@@ -325,6 +325,7 @@ func deleteNode(node *Node, key Key) *Node{
 			if node.right.left == nil && node.right.right == nil{
 				if node.right.key == key{
 					node.right = nil
+					node.sizeSum()
 					return node
 				}else{
 					var message = fmt.Sprintf("Node containing key %v is not exist.", key)
@@ -339,7 +340,6 @@ func deleteNode(node *Node, key Key) *Node{
 		var nodeMinTmp = min(nodeTmp.right)
 		node.key = nodeMinTmp.key
 		node.val = nodeMinTmp.val
-		node.N = nodeMinTmp.N
 		//*node = *nodeMinTmp
 		node.left = nodeTmp.left
 		if nodeTmp.left == nil && nodeTmp.right == nil{
@@ -348,5 +348,6 @@ func deleteNode(node *Node, key Key) *Node{
 			node.right = deleteMin(nodeTmp.right)
 		}
 	}
+	node.sizeSum()
 	return node
 }
