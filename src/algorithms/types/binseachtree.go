@@ -241,3 +241,42 @@ func rank(node *Node, key Key) int{
 		return size(node.left)
 	}
 }
+
+func (bst *BinSearchTree) DeleteMin() {
+	if bst.root == nil{
+		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
+		panic(message)
+	}else{
+		if bst.root.left == nil && bst.root.right == nil{
+			bst.root = nil
+		}else{
+			bst.root = deleteMin(bst.root)
+		}
+	}
+}
+
+func deleteMin(node *Node) *Node{
+	if node.left == nil{
+		return node.right
+	}
+	if node.left.left == nil && node.left.right == nil{
+		node.left = nil
+		if node.right == nil{
+			node.N = 1
+		}else{
+			node.N = size(node.right) + 1
+		}
+	}else{
+		node.left = deleteMin(node.left)
+		if node.left == nil && node.right == nil{
+			node.N = 1
+		}else if node.left == nil{
+			node.N = size(node.right) + 1
+		}else{
+			node.N = size(node.left) + size(node.right) + 1
+		}
+	}
+	return node
+}
+
+
