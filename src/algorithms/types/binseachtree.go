@@ -181,6 +181,7 @@ func (bst *BinSearchTree) Select(k int) Key{
 	}
 }
 
+//Return *Node containing key of rank k
 func selectNode(node *Node, k int) *Node{
 	if node.left == nil{
 		if 0 > k {
@@ -205,5 +206,38 @@ func selectNode(node *Node, k int) *Node{
 		return selectNode(node.right, k-t-1)
 	}else{
 		return node
+	}
+}
+
+func (bst *BinSearchTree) Rank(key Key) int{
+	if bst.root == nil{
+		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
+		panic(message)
+	}else{
+		return rank(bst.root, key)
+	}
+}
+
+//return number of keys less than key in th subtree rooted at x.
+func rank(node *Node, key Key) int{
+	var cmp = key.Compare(node.key)
+	if cmp < 0 {
+		if node.left == nil{
+			return 0
+		}else{
+			return rank(node.left, key)
+		}
+	}else if cmp > 0{
+		if node.left == nil{
+			return 1 + rank(node.right, key)
+		}else if node.right == nil{
+			return 1 + size(node.left)
+		}else{
+			return 1 + size(node.left) + rank(node.right, key)
+		}
+	}else if node.left == nil{
+		return 0
+	}else{
+		return size(node.left)
 	}
 }
