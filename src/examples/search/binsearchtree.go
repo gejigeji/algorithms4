@@ -1,22 +1,22 @@
 package main
 
 import (
+	"algorithms/types"
 	"fmt"
-	atypes "algorithms/types"
 	"math/rand"
 )
 
 func main(){
-	var c = new(atypes.BinSearchTree)
+	var c = new(types.BinSearchTree)
 	var length = 10
 	for i:= 0;i < length; i++{
-		var key = atypes.Integer(rand.Intn(1000))
-		var val = atypes.Val(i)
+		var key = types.Integer(rand.Intn(1000))
+		var val = types.Val(i)
 		c.Put(key, val)
 	}
 	c.Show()
-	//fmt.Println(c.Get(atypes.Integer(10)))
-	fmt.Println(c.Floor(atypes.Integer(100)))
+	//fmt.Println(c.Get(types.Integer(10)))
+	fmt.Println(c.Floor(types.Integer(100)))
 	fmt.Println(c.Select(0))
 	fmt.Println(c.Select(1))
 	fmt.Println(c.Select(2))
@@ -27,15 +27,27 @@ func main(){
 	fmt.Println(c.Select(7))
 	fmt.Println(c.Select(8))
 	fmt.Println(c.Min())
-	fmt.Println(c.Rank(atypes.Integer(1000)))
+	fmt.Println(c.Rank(types.Integer(1000)))
 
-	c.Delete(atypes.Integer(318))
+	c.Delete(types.Integer(318))
 	c.Show()
 	fmt.Println(c.Min())
 
 	c.DeleteMin()
 	c.Show()
 	fmt.Println(c.Min())
+	fmt.Println(c.Max())
+
+	var q = c.Keys(c.Min(), c.Max())
+
+	fmt.Println(q.Pop())
+	fmt.Println(q.Pop())
+	fmt.Println(q.Pop())
+	fmt.Println(q.Pop())
+	fmt.Println(q.Pop())
+	fmt.Println(q.Pop())
+
+
 /*
 	c.DeleteMin()
 	c.Show()
