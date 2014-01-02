@@ -96,23 +96,22 @@ func (bst *BinSearchTree) Put(key Key, val Val) {
 	bst.root = put(bst.root, key, val)
 }
 
-func put(node *Node, key Key, val Val) *Node{
-	if node == nil{
-		return &Node{key, val, nil, nil, 1}
-	}
-	var cmp = key.Compare(node.key)
-	if cmp < 0 {
-		node.left = put(node.left, key, val)
-	}else if cmp > 0{
-		node.right = put(node.right, key, val)
-	}else {
-		node.val = val
-	}
-	node.N = size(node.left) + size(node.right) + 1
-	return node
+func put(o *Node, key Key, val Val) *Node {
+		if o == nil{
+			return &Node{key, val, nil, nil, 1}
+		}
+		var cmp = key.Compare(o.key)
+		if cmp < 0 {
+			o.left = put(o.left, key, val)
+		}else if cmp > 0{
+			o.right = put(o.right, key, val)
+		}else {
+			o.val = val
+		}
+		o.N = size(o.left) + size(o.right) + 1
+		return o
 }
 
-//Show all node in the binsearchtree
 func (bst *BinSearchTree) Show(){
 	bst.check()
 	show(bst.root)
