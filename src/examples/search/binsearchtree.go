@@ -7,7 +7,8 @@ import (
 )
 
 func main(){
-	var c = new(types.BinSearchTree)
+	var c = types.NewBinST()
+
 	var length = 10
 	for i:= 0;i < length; i++{
 		var key = types.Integer(rand.Intn(1000))

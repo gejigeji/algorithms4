@@ -6,6 +6,10 @@ type BinSearchTree struct{
 	root *Node
 }
 
+func NewBinST() *BinSearchTree{
+	return &BinSearchTree{root:nil}
+}
+
 type Key Compare
 
 type Val int
@@ -17,125 +21,125 @@ type Node struct{
 	N int
 }
 
+func (bst *BinSearchTree) isEmpty() bool{
+	if bst.root == nil{
+		return true
+	}else{
+		return false
+	}
+}
+
+func (bst *BinSearchTree) check(){
+	if bst.isEmpty(){
+		var message = fmt.Sprintf("There isn't any node in binsearchtree %v\n",bst)
+		panic(message)
+	}
+}
+
+
 //Return size of the binsearchtree
 func (bst *BinSearchTree) Size() int{
-	if bst.root != nil{
+	if !bst.isEmpty(){
 		return size(bst.root)
 	}else{
 		return 0
 	}
 }
 
+
+func size(other interface{}) int{
+	switch o := other.(type){
+	case *NodeRB:
+		if o == nil{
+			return 0 
+		}
+		return o.N
+	case *Node:
+		if o == nil{
+			return 0 
+		}
+		return o.N
+	default:
+		panic("Can not use method size()")
+	}
+}
+/*
 func size(node *Node) int{
 	if node == nil {
 		return 0
 	}
 	return node.N
-}
+}*/
 
 //Return the value of node with Key key
 func (bst *BinSearchTree) Get(key Key) Val{
-	if bst.root != nil{
-		return get(bst.root, key)
-	}else{
-		panic("There is no node in this binsearchtree")
-	}
+	bst.check()
+	return *get(bst.root, key)
 }
 
-func get(node *Node, key Key) Val{
+func get(node *Node, key Key) *Val{
+	if node == nil{
+		return nil
+	}
 	var cmp int = key.Compare(node.key)
-	if cmp < 0 {
-		if node.left != nil {
-			return get(node.left, key)
-		}else{
-			var message = fmt.Sprintf("Key %v is not in the binsearchtree", key)
-			panic(message)
-		}
-	}else if cmp > 0 {
-		if node.right != nil {
-			return get(node.right, key)
-		}else{
-			var message = fmt.Sprintf("Key %v is not in the binsearchtree", key)
-			panic(message)
-		}
-	}else {
-		return node.val
+	if cmp < 0{
+		return get(node.left, key)
+	}else if cmp > 0{
+		return get(node.right, key)
+	}else{
+		return get(node.right, key)
 	}
 }
 
 //Put node with Key key and Val val in the binsearchtree
 func (bst *BinSearchTree) Put(key Key, val Val) {
-	var node = bst.root
-	if node == nil{
-		bst.root = &Node{key, val, nil, nil, 1}
-	}else{
-		put(node, key, val)
-	}
+	bst.root = put(bst.root, key, val)
 }
 
-func put(node *Node, key Key, val Val) {
+func put(node *Node, key Key, val Val) *Node{
+	if node == nil{
+		return &Node{key, val, nil, nil, 1}
+	}
 	var cmp = key.Compare(node.key)
 	if cmp < 0 {
-		var son = node.left
-		if son == nil{
-			node.left = &Node{key, val, nil, nil, 1}
-		}else{
-			put(son, key, val)
-		}
-	}else if cmp > 0 {
-		var son = node.right
-		if son == nil{
-			node.right = &Node{key, val, nil, nil, 1}
-		}else{
-			put(son, key, val)
-		}
-	}else{
+		node.left = put(node.left, key, val)
+	}else if cmp > 0{
+		node.right = put(node.right, key, val)
+	}else {
 		node.val = val
 	}
 	node.N = size(node.left) + size(node.right) + 1
+	return node
 }
 
 //Show all node in the binsearchtree
 func (bst *BinSearchTree) Show(){
-	var node = bst.root
-	if node == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}else{
-		show(node)
-	}
+	bst.check()
+	show(bst.root)
 }
 
 func show(node *Node){
-	fmt.Println("        node:  key: ",node.key, " value: ", node.val, " size: ",node.N)
-	if node.left != nil{
-		fmt.Println(" left  child:  key: ",node.left.key, " value: ", node.left.val, " size: ", node.left.N)
-	}else{
-		fmt.Println(" left  child:  nil")
-	}
-	if node.right != nil{
-		fmt.Println(" right child:  key: ",node.right.key, " value: ", node.right.val, " size: ", node.right.N, "\n")
-	}else{
-		fmt.Println(" right child:  nil\n")
-	}
-	if node.left == nil{
-	}else{
+	if node != nil{
+		fmt.Println("        node:  key: ",node.key, " value: ", node.val, " size: ",node.N)
+		if node.left != nil{
+			fmt.Println(" left  child:  key: ",node.left.key, " value: ", node.left.val, " size: ", node.left.N)
+		}else{
+			fmt.Println(" left  child:  nil")
+		}
+		if node.right != nil{
+			fmt.Println(" right child:  key: ",node.right.key, " value: ", node.right.val, " size: ", node.right.N, "\n")
+		}else{
+			fmt.Println(" right child:  nil\n")
+		}
 		show(node.left)
-	}
-	if node.right == nil{
-	}else{
 		show(node.right)
 	}
 }
 
 //Return node with minimum Key
 func (bst *BinSearchTree) Min() Key{
-	if bst.root == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}else{
-		return min(bst.root).key
-	}
+	bst.check()
+	return min(bst.root).key
 }
 
 func min(node *Node) *Node{
@@ -148,12 +152,8 @@ func min(node *Node) *Node{
 
 //Return node with maximum Key
 func (bst *BinSearchTree) Max() Key{
-	if bst.root == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}else{
-		return max(bst.root).key
-	}
+	bst.check()
+	return max(bst.root).key
 }
 
 func max(node *Node) *Node{
@@ -167,67 +167,42 @@ func max(node *Node) *Node{
 
 //Return node with Key not bigger than key
 func (bst *BinSearchTree) Floor(key Key) Key{
-	if bst.root == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}else{
-		return floor(bst.root, key).key
-	}
+	bst.check()
+	return floor(bst.root, key).key
 }
 
 func floor(node *Node, key Key) *Node{
+	if node == nil {
+		return nil
+	}
 	var cmp = key.Compare(node.key)
 	if cmp == 0 {
 		return node
 	}else if cmp < 0 {
-		if node.left == nil{
-			var message = fmt.Sprintf("There isn't any key not bigger than %v", key)
-			panic(message)
-		}else{
-			return floor(node.left, key)
-		}
+		return floor(node.left, key)
+	}
+	var t = floor(node.right, key)
+	if t != nil {
+		return t
 	}else{
-		if node.right == nil{
-			return node
-		}else if key.Compare(node.right.key) < 0{
-			return node
-		}else{
-			return floor(node.right, key)
-		}
+		return node
 	}
 }
 
 func (bst *BinSearchTree) Select(k int) Key{
-	if bst.root == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}else{
-		return selectNode(bst.root, k).key
-	}
+	bst.check()
+	return selectNode(bst.root, k).key
 }
 
 //Return *Node containing key of rank k
 func selectNode(node *Node, k int) *Node{
-	if node.left == nil{
-		if 0 > k {
-			panic("Out of range")
-		}else if 0 < k{
-			if node.right == nil{
-				panic("Out of range")
-			}else{
-				return selectNode(node.right, k-1)
-			}
-		}else{
-			return node
-		}
+	if node == nil {
+		return nil
 	}
 	var t = size(node.left)
 	if t > k{
 		return selectNode(node.left, k)
 	}else if t < k{
-		if node.right == nil{
-			panic("Out of range")
-		}
 		return selectNode(node.right, k-t-1)
 	}else{
 		return node
@@ -236,148 +211,73 @@ func selectNode(node *Node, k int) *Node{
 
 //Return rank of Key key
 func (bst *BinSearchTree) Rank(key Key) int{
-	if bst.root == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}else{
-		return rank(bst.root, key)
-	}
+	bst.check()
+	return *rank(bst.root, key)
 }
 
 //Return number of nodes with key less than key in the subtree rooted at node.
-func rank(node *Node, key Key) int{
+func rank(node *Node, key Key) *int{
+	if node == nil{
+		var tmp = 0
+		return &tmp
+	}
 	var cmp = key.Compare(node.key)
 	if cmp < 0 {
-		if node.left == nil{
-			return 0
-		}else{
-			return rank(node.left, key)
-		}
+		return rank(node.left, key)
 	}else if cmp > 0{
-		if node.left == nil{
-			return 1 + rank(node.right, key)
-		}else if node.right == nil{
-			return 1 + size(node.left)
-		}else{
-			return 1 + size(node.left) + rank(node.right, key)
-		}
-	}else if node.left == nil{
-		return 0
+		var tmp = 1 + size(node.left) + *rank(node.right, key)
+		return &tmp
 	}else{
-		return size(node.left)
+		var tmp = size(node.left)
+		return &tmp
 	}
 }
 
 //Delete node with minimum Key
-func (bst *BinSearchTree) DeleteMin() {
-	if bst.root == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}else{
-		if bst.root.left == nil && bst.root.right == nil{
-			bst.root = nil
-		}else{
-			bst.root = deleteMin(bst.root)
-		}
-	}
+func (bst *BinSearchTree) DeleteMin(){
+	bst.check()
+	bst.root = deleteMin(bst.root)
 }
 
 func deleteMin(node *Node) *Node{
 	if node.left == nil{
 		return node.right
 	}
-	if node.left.left == nil && node.left.right == nil{
-		node.left = nil
-		node.sizeSum()
-	}else{
-		node.left = deleteMin(node.left)
-		node.sizeSum()
-	}
+	node.left = deleteMin(node.left)
+	node.N = size(node.left) + size(node.right) + 1
 	return node
 }
 
-//Calculate the size of the subtree rooted at node
-func (node *Node) sizeSum(){
-	if node.left == nil && node.right == nil{
-		node.N = 1
-	}else if node.left == nil{
-		node.N = size(node.right) + 1
-	}else{
-		node.N = size(node.left) + size(node.right) + 1
-	}
-}
-
 //Delete node with Key key
-func (bst *BinSearchTree) Delete(key Key) {
-	if bst.root == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}else{
-		if bst.root.left == nil && bst.root.right == nil{
-			if bst.root.key == key{
-				bst.root = nil
-			}else{
-				var message = fmt.Sprintf("Node containing key %v is not exist.", key)
-				panic(message)
-			}
-		}else{
-			bst.root = deleteNode(bst.root, key)
-		}
-	}
+func (bst *BinSearchTree) Delete(key Key){
+	bst.check()
+	bst.root = deleteNode(bst.root, key)
 }
 
 func deleteNode(node *Node, key Key) *Node{
-	var cmp = key.Compare(node.key)
-	if cmp < 0{
-		if node.left == nil{
-			var message = fmt.Sprintf("Node containing key %v is not exist.", key)
-			panic(message)
-		}else{
-			if node.left.left == nil && node.left.right == nil{
-				if node.left.key == key{
-					node.left = nil
-					node.sizeSum()
-					return node
-				}else{
-					var message = fmt.Sprintf("Node containing key %v is not exist.", key)
-					panic(message)
-				}
-			}else{
-				node.left = deleteNode(node.left, key)
-			}
-		}
-	}else if cmp > 0 {
-		if node.right == nil{
-			var message = fmt.Sprintf("Node containing key %v is not exist.", key)
-			panic(message)
-		}else{
-			if node.right.left == nil && node.right.right == nil{
-				if node.right.key == key{
-					node.right = nil
-					node.sizeSum()
-					return node
-				}else{
-					var message = fmt.Sprintf("Node containing key %v is not exist.", key)
-					panic(message)
-				}
-			}else{
-				node.right = deleteNode(node.right, key)
-			}
-		}
-	}else{
-		var nodeTmp *Node = node
-		var nodeMinTmp = min(nodeTmp.right)
-		node.key = nodeMinTmp.key
-		node.val = nodeMinTmp.val
-		//*node = *nodeMinTmp
-		node.left = nodeTmp.left
-		if nodeTmp.left == nil && nodeTmp.right == nil{
-			node.right = nil
-		}else{
-			node.right = deleteMin(nodeTmp.right)
-		}
+	if node == nil {
+		return nil
 	}
-	node.sizeSum()
+	var cmp = key.Compare(node.key)
+	if cmp < 0 {
+		node.left = deleteNode(node.left, key)
+	}else if cmp > 0 {
+		node.right = deleteNode(node.right, key)
+	}else{
+		if node.right == nil{
+			return node.left
+		}
+		if node.left == nil{
+			return node.right
+		}
+		var t = node
+		var minNode = min(t.right)
+		node.key = minNode.key
+		node.val = minNode.val
+		node.right = deleteMin(t.right)
+		node.left = t.left
+	}
+	node.N = size(node.left) + size(node.right) + 1
 	return node
 }
 
@@ -388,25 +288,25 @@ func deleteNode(node *Node, key Key) *Node{
 
 //Return Queue of node with Key between Key lo and Key hi
 func (bst *BinSearchTree) Keys(lo Key, hi Key) *Queue{
-	if bst.root == nil{
-		var message = fmt.Sprintf("There isn't any node in this binsearchtree")
-		panic(message)
-	}
+	bst.check()
 	var q = new(Queue)
 	keys(bst.root, q, lo, hi)
 	return q
 }
 
 func keys(node *Node, q *Queue, lo Key, hi Key){
+	if node == nil{
+		return
+	}
 	var cmplo = lo.Compare(node.key)
 	var cmphi = hi.Compare(node.key)
-	if cmplo < 0 && node.left != nil{
+	if cmplo < 0{
 		keys(node.left, q, lo, hi)
 	}
 	if cmplo <= 0 && cmphi >= 0{
 		q.Push(node.key)
 	}
-	if cmphi > 0 && node.right != nil{
+	if cmphi > 0 {
 		keys(node.right, q, lo, hi)
 	}
 }
