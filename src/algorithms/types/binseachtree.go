@@ -256,7 +256,7 @@ func (bst *BinSearchTree) Delete(key Key){
 
 func deleteNode(node *Node, key Key) *Node{
 	if node == nil {
-		return nil
+		return node
 	}
 	var cmp = key.Compare(node.key)
 	if cmp < 0 {
@@ -271,9 +271,7 @@ func deleteNode(node *Node, key Key) *Node{
 			return node.right
 		}
 		var t = node
-		var minNode = min(t.right)
-		node.key = minNode.key
-		node.val = minNode.val
+		node = min(t.right)
 		node.right = deleteMin(t.right)
 		node.left = t.left
 	}
