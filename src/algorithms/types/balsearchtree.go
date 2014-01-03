@@ -194,14 +194,15 @@ func deleteMinRB(node *NodeRB) *NodeRB {
 	if node.left == nil {
 		return node.right
 	}
-	if node.left == minRB(node) && isRed(node.left) {
+	var minNode = minRB(node)
+	if node.left == minNode && isRed(node.left) {
 		node.left = node.left.right
-	} else if node.left == minRB(node) && !isRed(node.left) {
+	} else if node.left == minNode && !isRed(node.left) {
 		node.left = node.left.right
 		if node.left != nil {
 			node = rotateLeft(node)
 		}
-	} else if node.left.left == minRB(node) && !isRed(node.left.left) && node.left.right == nil {
+	} else if node.left.left == minNode && !isRed(node.left.left) && node.left.right == nil {
 		node.left.left = node.left.right
 		node = rotateLeft(node)
 	} else {
@@ -210,8 +211,39 @@ func deleteMinRB(node *NodeRB) *NodeRB {
 	node.N = size(node.left) + size(node.right) + 1
 	return node
 }
-
 /*
+
+func (bst *BalSearchTree) Find(key Key){
+	bst.check()
+	return find(bst.root, key)
+}
+
+func find(node *NodeRB, key Key) *NodeRB{
+	if node == nil{
+		return nil
+	}
+	var cmp int = key.Compare(node.key)
+	if cmp < 0{
+		return find(node.left, key)
+	}else if cmp > 0{
+		return get(node.right, key)
+	}else{
+		return get(node.right, key)
+	}
+}
+
+
+
 func (bst *BalSearchTree) Delete(key Key){
-	bst.check
-*/
+	bst.check()
+	bst.root = deleteNodeRB(bst.root, key)
+}
+
+func deleteNodeRB(node *NodeRB, key Key) *Node{
+	if node == nil{
+		return nil
+	}
+	var cmp = key.Compare(node.key)
+	if cmp < 0 {
+		node.left
+		*/

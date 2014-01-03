@@ -12,11 +12,12 @@ func main(){
 	var length = 10
 	for i:= 0;i < length; i++{
 		var key = types.Integer(rand.Intn(1000))
+		fmt.Println(key)
 		var val = types.Val(i)
 		c.Put(key, val)
 	}
 	c.Show()
-	//fmt.Println(c.Get(types.Integer(10)))
+	fmt.Println(c.Get(types.Integer(59)))
 	fmt.Println(c.Floor(types.Integer(100)))
 	fmt.Println(c.Select(0))
 	fmt.Println(c.Select(1))

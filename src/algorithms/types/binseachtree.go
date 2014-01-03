@@ -87,7 +87,8 @@ func get(node *Node, key Key) *Val{
 	}else if cmp > 0{
 		return get(node.right, key)
 	}else{
-		return get(node.right, key)
+		var v = node.val
+		return &v
 	}
 }
 
