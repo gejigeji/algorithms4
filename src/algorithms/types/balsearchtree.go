@@ -187,14 +187,14 @@ func maxRB(node *NodeRB) *NodeRB {
 
 func (bst *BalSearchTree) DeleteMin() {
 	bst.check()
-	bst.root = deleteMinRB(bst.root)
+	var minNode = minRB(bst.root)
+	bst.root = deleteMinRB(bst.root,minNode)
 }
 
-func deleteMinRB(node *NodeRB) *NodeRB {
+func deleteMinRB(node *NodeRB, minNode *NodeRB) *NodeRB {
 	if node.left == nil {
 		return node.right
 	}
-	var minNode = minRB(node)
 	if node.left == minNode && isRed(node.left) {
 		node.left = node.left.right
 	} else if node.left == minNode && !isRed(node.left) {
@@ -202,37 +202,32 @@ func deleteMinRB(node *NodeRB) *NodeRB {
 		if node.left != nil {
 			node = rotateLeft(node)
 		}
-	} else if node.left.left == minNode && !isRed(node.left.left) && node.left.right == nil {
-		node.left.left = node.left.right
-		node = rotateLeft(node)
 	} else {
-		node.left = deleteMinRB(node.left)
+		node.left = deleteMinRB(node.left,minNode)
 	}
 	node.N = size(node.left) + size(node.right) + 1
 	return node
 }
-/*
 
-func (bst *BalSearchTree) Find(key Key){
+func (bst *BalSearchTree) GetNodeRB(key Key) *NodeRB{
 	bst.check()
-	return find(bst.root, key)
+	return getNodeRB(bst.root, key)
 }
 
-func find(node *NodeRB, key Key) *NodeRB{
+func getNodeRB(node *NodeRB, key Key) *NodeRB{
 	if node == nil{
 		return nil
 	}
 	var cmp int = key.Compare(node.key)
 	if cmp < 0{
-		return find(node.left, key)
+		return getNodeRB(node.left, key)
 	}else if cmp > 0{
-		return get(node.right, key)
+		return getNodeRB(node.right, key)
 	}else{
-		return get(node.right, key)
+		return node
 	}
 }
-
-
+/*
 
 func (bst *BalSearchTree) Delete(key Key){
 	bst.check()
@@ -243,6 +238,7 @@ func deleteNodeRB(node *NodeRB, key Key) *Node{
 	if node == nil{
 		return nil
 	}
+	var targetNode = getNode
 	var cmp = key.Compare(node.key)
 	if cmp < 0 {
 		node.left
