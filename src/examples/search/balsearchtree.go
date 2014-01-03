@@ -2,20 +2,48 @@ package main
 
 import (
 	"algorithms/types"
-//	"fmt"
+	"fmt"
 	"math/rand"
 )
 
 func main(){
 	var c = types.NewBalST()
 
-	var length = 10
+	var length = 100
 	for i:= 0;i < length; i++{
 		var key = types.Integer(rand.Intn(1000))
 		var val = types.Val(i)
 		c.Put(key, val)
 	}
 	c.Show()
+	fmt.Println(c.Min())
+
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+	c.DeleteMin()
+	c.Show()
+	fmt.Println(c.Min())
+	c.DeleteMin()
 	/*
 	//fmt.Println(c.Get(types.Integer(10)))
 	fmt.Println(c.Floor(types.Integer(100)))
