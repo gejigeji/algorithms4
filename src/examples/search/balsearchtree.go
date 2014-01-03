@@ -9,12 +9,20 @@ import (
 func main(){
 	var c = types.NewBalST()
 
-	var length = 100
-	for i:= 0;i < length; i++{
-		var key = types.Integer(rand.Intn(1000))
+	var length = 1000000
+	for i := 0;i < length; i++{
+		var key = types.Integer(rand.Intn(100000000))
 		var val = types.Val(i)
 		c.Put(key, val)
 	}
+	fmt.Println(c.Size())
+	s := c.Size()
+	fmt.Println(c.Max())
+	for i := 0 ; i < s-1; i++ {
+		c.DeleteMin()
+	}
+	c.Show()
+	/*
 	c.Show()
 	fmt.Println(c.Min())
 
@@ -44,6 +52,7 @@ func main(){
 	c.Show()
 	fmt.Println(c.Min())
 	c.DeleteMin()
+	*/
 	/*
 	//fmt.Println(c.Get(types.Integer(10)))
 	fmt.Println(c.Floor(types.Integer(100)))

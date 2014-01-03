@@ -101,11 +101,11 @@ func putRB(o *NodeRB, key Key, val Val) *NodeRB {
 	if isRed(o.right) && !isRed(o.left) {
 		o = rotateLeft(o)
 	}
-	if o.left != nil{
-	if isRed(o.left.left) && isRed(o.left) {
-		o = rotateRight(o)
+	if o.left != nil {
+		if isRed(o.left.left) && isRed(o.left) {
+			o = rotateRight(o)
+		}
 	}
-}
 	if isRed(o.left) && isRed(o.right) {
 		flipColors(o)
 	}
@@ -171,6 +171,20 @@ func minRB(node *NodeRB) *NodeRB {
 	}
 }
 
+//Return node with maximum Key
+func (bst *BalSearchTree) Max() Key {
+	bst.check()
+	return maxRB(bst.root).key
+}
+
+func maxRB(node *NodeRB) *NodeRB {
+	if node.right == nil {
+		return node
+	} else {
+		return maxRB(node.right)
+	}
+}
+
 func (bst *BalSearchTree) DeleteMin() {
 	bst.check()
 	bst.root = deleteMinRB(bst.root)
@@ -182,32 +196,22 @@ func deleteMinRB(node *NodeRB) *NodeRB {
 	}
 	if node.left == minRB(node) && isRed(node.left) {
 		node.left = node.left.right
-		return node
-	} else {
-		if node.left == minRB(node) && !isRed(node.left) {
-
-			node.left = node.left.right
-			if node.left != nil {
-				node = rotateLeft(node)
-				if isRed(node.left.left) && isRed(node.left) {
-					node = rotateRight(node)
-				}
-			}
-			node.N = size(node.left) + size(node.right) + 1
-			return node
-
-		} else if node.left.left == minRB(node) && !isRed(node.left.left) && node.left.right == nil {
-
-			node.left.left = node.left.right
+	} else if node.left == minRB(node) && !isRed(node.left) {
+		node.left = node.left.right
+		if node.left != nil {
 			node = rotateLeft(node)
-			if isRed(node.left.left) && isRed(node.left) {
-				node = rotateRight(node)
-			}
-			node.N = size(node.left) + size(node.right) + 1
-			return node
-
 		}
+	} else if node.left.left == minRB(node) && !isRed(node.left.left) && node.left.right == nil {
+		node.left.left = node.left.right
+		node = rotateLeft(node)
+	} else {
+		node.left = deleteMinRB(node.left)
 	}
-	node.left = deleteMinRB(node.left)
+	node.N = size(node.left) + size(node.right) + 1
 	return node
 }
+
+/*
+func (bst *BalSearchTree) Delete(key Key){
+	bst.check
+*/
